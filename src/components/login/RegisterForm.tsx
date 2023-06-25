@@ -39,7 +39,7 @@ const RegisterForm = (props: IRegisterForm) => {
           .then((response) => {
             const dataUserInfo = JSON.stringify(response.data);
             localStorage.setItem("userInfo", dataUserInfo);
-            toast.success("Đăng nhập thành công!");
+            toast.success("Đăng ký thành công!");
             navigate("/");
             setRefresh(!refresh);
           });
