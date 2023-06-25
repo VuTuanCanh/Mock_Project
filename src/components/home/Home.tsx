@@ -81,7 +81,7 @@ export default function Home(props: IHomeProps) {
         <div className="grid grid-rows-2 grid-cols-5">
           {dataProduct &&
             dataProduct.slice(0, 10).map((product) => {
-              return <Product1 product={product} />;
+              return <Product1 product={product} key={product._id} />;
             })}
         </div>
       </div>

@@ -7,11 +7,8 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Alert } from "@mui/material";
 import { IUserProfile } from "../../types/userProfile";
-import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
+import { toast } from "react-toastify";
 
-export interface State extends SnackbarOrigin {
-  open: boolean;
-}
 export interface ILoginForm {
   refresh: boolean;
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
@@ -38,12 +35,13 @@ const LoginForm = (props: ILoginForm) => {
           .then((response) => {
             const dataUserInfo = JSON.stringify(response.data);
             localStorage.setItem("userInfo", dataUserInfo);
+            toast.success("Đăng nhập thành công!");
+            navigate("/");
+            setRefresh(!refresh);
           });
-        navigate("/");
-        setRefresh(!refresh);
       })
       .catch((err: any) => {
-        console.log(err);
+        toast.error(`${err}`);
       });
   };
   const togglePasswordVisibility = () => {
@@ -65,6 +63,10 @@ const LoginForm = (props: ILoginForm) => {
           <h3 className="text-center text-xl text-indigo-800 font-semibold ">
             Get free shipping, discount vouchers and members only products when you’re member
           </h3>
+          <div className="text-center">
+            <p>Email: test@gmail.com</p>
+            <p>pass: test123@</p>
+          </div>
           <div className="mt-12 flex justify-center">
             <form className="w-full max-w-xl " onSubmit={handleSubmit(onSubmit)}>
               <div className="w-full md:w-auto px-3 mb-6 md:mb-0">

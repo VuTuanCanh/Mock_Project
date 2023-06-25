@@ -4,16 +4,22 @@ import { IUser } from "../../types/userType";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router";
-import { Alert } from "@mui/material";
 import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-toastify";
 
-const RegisterForm = () => {
+export interface IRegisterForm {
+  refresh: boolean;
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const RegisterForm = (props: IRegisterForm) => {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<IUser>({ mode: "onChange" });
+  const { refresh, setRefresh } = props;
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const onSubmit = (data: any) => {
@@ -24,15 +30,22 @@ const RegisterForm = () => {
       firstName: data.name.firstname,
       lastName: data.name.lastname,
     };
-    axiosInstance
-      .post(`/api/users/register`, dataRegister)
+    axios
+      .post(`${process.env.REACT_APP_SERVER_URL}/api/users/register`, dataRegister)
       .then((res: any) => {
         Cookies.set("auth", res.data.token);
-        <Alert severity="success">Register Successfully!</Alert>;
-        navigate("/");
+        axios
+          .get(`${process.env.REACT_APP_SERVER_URL}/api/users/profile/${res.data._id}`)
+          .then((response) => {
+            const dataUserInfo = JSON.stringify(response.data);
+            localStorage.setItem("userInfo", dataUserInfo);
+            toast.success("Đăng nhập thành công!");
+            navigate("/");
+            setRefresh(!refresh);
+          });
       })
       .catch((err: any) => {
-        console.log(err);
+        toast.error(`${err}`);
       });
   };
   const togglePasswordVisibility = () => {
